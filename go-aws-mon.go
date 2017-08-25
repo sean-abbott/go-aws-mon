@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+    "fmt"
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/service/cloudwatch"
     "github.com/jessevdk/go-flags"
@@ -27,7 +27,7 @@ type Options struct {
     NameSpace string `long:"namespace" default:"Linux/System" description:"CloudWatch metric namespace"`
     DiskPaths string `long:"disk-path" default:"/" description:"Disk Path"`
 
-	IsDryRun bool `short:"d" long:"dry-run" description:"Marks this a dry run. Does not attempt to contact aws, prints payload to stdout."`
+    IsDryRun bool `short:"d" long:"dry-run" description:"Marks this a dry run. Does not attempt to contact aws, prints payload to stdout."`
 }
 
 var opts Options
@@ -44,19 +44,19 @@ func main() {
     }
 
     var metadata map[string]string
-	if !opts.IsDryRun {
-		temp_metadata, err := getInstanceMetadata()
+    if !opts.IsDryRun {
+        temp_metadata, err := getInstanceMetadata()
         if err != nil {
             log.Fatal("Can't get InstanceData, please confirm we are running on a AWS EC2 instance: ", err)
         }
         metadata = temp_metadata
-	} else {
-		metadata = map[string]string{
+    } else {
+        metadata = map[string]string{
             "region": "us-east-1",
             "imageId": "i-fakefakefake",
             "instanceType": "r3.fake",
-		}
-	}
+        }
+    }
 
     memUtil, memUsed, memAvail, swapUtil, swapUsed, err := memoryUsage()
 
