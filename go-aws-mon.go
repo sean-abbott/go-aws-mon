@@ -8,8 +8,8 @@ import (
     "log"
     "os"
     "strings"
+    "strconv"
 )
-
 
 type Options struct {
     IsAggregated bool `long:"aggregated" description:"Adds aggregated metrics for instance type, AMI ID, and overall for the region"`
@@ -28,6 +28,7 @@ type Options struct {
     DiskPaths string `long:"disk-path" default:"/" description:"Disk Path"`
 
     IsDryRun bool `short:"d" long:"dry-run" description:"Marks this a dry run. Does not attempt to contact aws, prints payload to stdout."`
+    CustomMetrics []string `long:"custom-metric" description:"name:unit:value tuples for custom metrics to submit. units must conform to cloudwatch. may be specified multiple times"`
 }
 
 var opts Options
@@ -163,8 +164,22 @@ func main() {
         }
     }
 
+    for _, custom_metric := range opts.CustomMetrics {
+        metric_slice := strings.Split(custom_metric, ":")
+        name := metric_slice[0]
+        unit := metric_slice[1]
+        value, err := strconv.ParseFloat(metric_slice[2], 64)
+        if err != nil {
+            log.Fatal("attempted to parse to float failed")
+        }
+        metricData, err = addMetric(name, unit, value, dims, metricData)
+        if err != nil {
+            log.Fatal(fmt.Sprintf("Can't add %s metric: ", name), err)
+        }
+    }
+
     if opts.IsDryRun {
-        fmt.Printf("Dry run. metric data that would be sent:\n")
+        fmt.Println("Dry run. metric data that would be sent:")
         for _, datum := range metricData {
             fmt.Printf(datum.GoString())
         }
