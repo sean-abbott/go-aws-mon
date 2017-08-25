@@ -16,6 +16,10 @@ AWS CloudWatch Monitoring Program
 * Disk Space Available - Disk space available in bytes
 * Linux partition inode usage - Disk parttion inodes usage in percent
 
+### Custom
+You can add a custom metric by using a colon separate string <name>:<unit>:<value>. The unit must be
+recognized by cloudwatch. You may add as many of these as you like.
+
 ## Usage
 
 * You need to config you aws credential before run the program
